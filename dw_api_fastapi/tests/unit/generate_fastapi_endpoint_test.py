@@ -65,7 +65,9 @@ class GenerateFastAPIEndpointTest(GenerateEndpointSpec, TestCase):
         pass
 
     def assert_command_called(self, command):
-        pass
+        spyed = self.port_spies[command]
+        self.assertTrue(hasattr(spyed, 'is_called'))
+        self.assertTrue(spyed.is_called)
 
     def assert_result_code(self, code):
         self.assertTrue(hasattr(self, 'response'))
