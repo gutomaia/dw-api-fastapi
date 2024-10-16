@@ -61,7 +61,7 @@ class GenerateFastAPIEndpointTest(GenerateEndpointSpec, TestCase):
             self.response = self.client.post(path, json=payload)
 
     def assert_endpoints_length(self, size):
-        pass
+        self.assertEqual(len(self.router.routes), size)
 
     def assert_command_called(self, command):
         spyed = self.port_spies[command]

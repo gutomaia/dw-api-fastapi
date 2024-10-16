@@ -23,10 +23,9 @@ class FastAPIEndpointGenerator(EndpointGenerator):
             return {}
 
     def generate_query_route(self, query: Query, func: QueryFunctionType):
-        return
         route_path = f'/{query.__name__.lower()}'
 
-        @self.router.get(route_path, response_model=query.__class__)
+        @self.router.get(route_path, response_model=query)
         async def dynamic_route():
             return func()
 
