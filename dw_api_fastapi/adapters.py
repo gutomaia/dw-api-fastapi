@@ -2,7 +2,7 @@ from dw_api.ports import CommandFunctionType, EndpointGenerator, QueryFunctionTy
 from dw_core.cqrs import Command, Query
 from fastapi import APIRouter
 
-class FlaskEndpointGenerator(EndpointGenerator):
+class FastAPIEndpointGenerator(EndpointGenerator):
 
     def __init__(self):
         self.router = APIRouter()

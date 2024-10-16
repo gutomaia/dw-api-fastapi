@@ -3,7 +3,7 @@ from unittest.mock import patch
 from dw_core.cqrs import Command
 from dw_api.ports import EndpointGenerator
 from dw_api.endpoint import auto_generate_endpoint
-from dw_api_fastapi.adapters import FlaskEndpointGenerator
+from dw_api_fastapi.adapters import FastAPIEndpointGenerator
 from dw_api.tests.generate_endpoint_spec import GenerateEndpointSpec
 from functools import wraps
 from fastapi import FastAPI
@@ -48,7 +48,7 @@ class GenerateFastAPIEndpointTest(GenerateEndpointSpec, TestCase):
     def when_auto_generate_endpoints(self):
         inject.configure(
             lambda binder: binder.bind(
-                EndpointGenerator, FlaskEndpointGenerator()
+                EndpointGenerator, FastAPIEndpointGenerator()
             ),
             clear=True,
         )
