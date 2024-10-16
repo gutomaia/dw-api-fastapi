@@ -23,7 +23,6 @@ def spy(func):
 
 
 class GenerateFastAPIEndpointTest(GenerateEndpointSpec, TestCase):
-    
     def setUp(self) -> None:
         self.ports = []
         self.get_ports_patched = patch(
@@ -72,5 +71,3 @@ class GenerateFastAPIEndpointTest(GenerateEndpointSpec, TestCase):
     def assert_result_code(self, code):
         self.assertTrue(hasattr(self, 'response'))
         self.assertEqual(self.response.status_code, code)
-
-    
