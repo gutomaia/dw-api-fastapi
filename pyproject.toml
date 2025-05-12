@@ -13,6 +13,8 @@ pydantic = "^2.11.4"
 inject = "^5.2.1"
 fastapi = "^0.115.12"
 httpx = "^0.28.1"
+black = "^25.1.0"
+isort = "^6.0.1"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.8.3"
