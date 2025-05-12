@@ -1,16 +1,18 @@
+from functools import wraps
 from unittest import TestCase
 from unittest.mock import patch
-from dw_core.cqrs import Command
-from dw_api.ports import EndpointGenerator
+
+import inject
 from dw_api.endpoint import auto_generate_endpoint
-from dw_api_fastapi.adapters import FastAPIEndpointGenerator
+from dw_api.ports import EndpointGenerator
 from dw_api.tests.generate_endpoint_spec import GenerateEndpointSpec
-from dw_events.ports import EventSubscriber
+from dw_core.cqrs import Command
 from dw_events.adapters import BasicSubscriber
-from functools import wraps
+from dw_events.ports import EventSubscriber
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-import inject
+
+from dw_api_fastapi.adapters import FastAPIEndpointGenerator
 
 
 def spy(func):

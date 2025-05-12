@@ -1,13 +1,15 @@
+from typing import get_type_hints
+
 from dw_api.ports import (
     CommandFunctionType,
     EndpointGenerator,
     QueryFunctionType,
 )
-from dw_api_fastapi.defer import FastAPIDeferredEmitter
 from dw_core.cqrs import Command, Query
 from dw_events.ports import DeferredEmitter
 from fastapi import APIRouter, BackgroundTasks
-from typing import get_type_hints
+
+from dw_api_fastapi.defer import FastAPIDeferredEmitter
 
 
 class FastAPIEndpointGenerator(EndpointGenerator):

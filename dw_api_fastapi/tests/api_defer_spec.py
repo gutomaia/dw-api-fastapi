@@ -1,7 +1,8 @@
-from dw_core.cqrs import Command, Event
-from dw_events.ports import DeferredEmitter
 from typing import Callable
 from unittest import skip
+
+from dw_core.cqrs import Command, Event
+from dw_events.ports import DeferredEmitter
 
 
 class ApiDeferSpec:

@@ -1,8 +1,8 @@
+import inject
+from dw_core.cqrs import Event
 from dw_events.adapters import AbstractDeferredEmitter
 from dw_events.ports import EventSubscriber
-from dw_core.cqrs import Event
 from fastapi import BackgroundTasks
-import inject
 
 
 class FastAPIDeferredEmitter(AbstractDeferredEmitter):
