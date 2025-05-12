@@ -13,8 +13,6 @@ pydantic = "^2.11.4"
 inject = "^5.2.1"
 fastapi = "^0.115.12"
 httpx = "^0.28.1"
-black = "^25.1.0"
-isort = "^6.0.1"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.8.3"
@@ -29,6 +27,10 @@ sphinx-rtd-theme = "^3.0.2"
 sphinxcontrib-plantuml = "^0.30"
 ghp-import = "^2.1.0"
 pytest-notifier = "^1.0.4"
+black = "^25.1.0"
+isort = "^6.0.1"
+pycodestyle = "^2.13.0"
+flake8 = "^7.2.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
