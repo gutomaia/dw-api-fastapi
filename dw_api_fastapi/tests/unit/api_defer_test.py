@@ -58,7 +58,7 @@ class ApiDeferTest(ApiDeferSpec, TestCase):
 
     def get_ports(self):
         return self.ports
-    
+
     def add_task(self, func, *args, **kwargs):
         import pdb; pdb.set_trace()
         self.tasks.append([func, args, kwargs])

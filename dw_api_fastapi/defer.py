@@ -16,6 +16,4 @@ class FastAPIDeferredEmitter(AbstractDeferredEmitter):
     def defer_execution(self, event: Event, subscribers):
         import pdb; pdb.set_trace()
         for subscriber in subscribers:
-            self.background_tasks.add_task(
-                subscriber, event, subscriber
-            )
+            self.background_tasks.add_task(subscriber, event, subscriber)

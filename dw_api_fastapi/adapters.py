@@ -42,6 +42,7 @@ class FastAPIEndpointGenerator(EndpointGenerator):
                 return {}
 
         else:
+
             @self.router.post(route_path, response_model=dict)
             async def dynamic_route(payload: dict):
                 parsed_command = command.model_validate(payload)

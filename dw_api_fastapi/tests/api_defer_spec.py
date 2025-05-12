@@ -21,10 +21,10 @@ class ApiDeferSpec:
 
     def assert_execution_deferred(self):
         raise NotImplementedError()
-    
+
     def assert_task_queue(self):
         raise NotImplementedError()
-    
+
     def assert_handler_called(self, handler):
         raise NotImplementedError()
 
@@ -64,7 +64,6 @@ class ApiDeferSpec:
         self.when_call(Echo(message='Hello World'))
 
         self.assert_task_queue()
-
 
     def test_event_handler_was_called(self):
         class Echo(Command):
