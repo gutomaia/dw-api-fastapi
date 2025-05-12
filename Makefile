@@ -11,7 +11,7 @@ MAKERY_SCRIPT=gutonet.mk
 MAKERY_DEFAULT_TASK=default_makery
 MAKERY_BASE_URL=https://raw.githubusercontent.com/${MAKERY_REPOSITORY}/master
 
-PYTHON_VERSION?=3.11
+PYTHON_VERSION?=3.12
 PYTHON_MODULES=dw_api_fastapi
 
 WGET=wget -q
