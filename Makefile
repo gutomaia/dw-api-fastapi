@@ -2,6 +2,7 @@ PLATFORM = $(shell uname)
 
 PROJECT_NAME=Downwind API FastAPI
 PROJECT_TAG=dw-api-fastapi
+PUBLIC_PROJECT=true
 GITHUB_DOMAIN=github.com
 GITHUB_TOKEN?=must be present on your env.mk, create in github at setting/user developer/external token with repo scope
 GITHUB_PROJECT=gutomaia/dw-api-fastapi
@@ -15,11 +16,19 @@ PYTHON_VERSION?=3.12
 PYTHON_MODULES=dw_api_fastapi
 
 WGET=wget -q
+ifeq "true" "${PUBLIC_PROJECT}"
+GH_WGET=${WGET}
+else
 GH_WGET=${WGET} --header "Authorization: token ${GITHUB_TOKEN}"
+endif
 
 ifeq "" "$(shell which wget)"
 WGET=curl -O -s -L -s
+ifeq "true" "${PUBLIC_PROJECT}"
+GH_WGET=${WGET}
+else
 GH_WGET=${WGET} -H "Authorization: token ${GITHUB_TOKEN}"
+endif
 endif
 
 OK=\033[32m[OK]\033[39m
@@ -42,7 +51,9 @@ $(shell echo "# Generated file env.mk" > env.mk)
 $(shell echo "GITHUB_TOKEN=" > env.mk)
 endif
 
-ifeq "" "${GITHUB_TOKEN}"
+COND := $(and $(if $(GITHUB_TOKEN),,1),$(if $(filter false,$(PUBLIC_PROJECT)),1))
+
+ifeq ($(COND),1)
 default:
 	echo ${GITHUB_TOKEN} ${shell test -f ~/env.mk && echo true}
 	@echo "You must create a GITHUB_TOKEN var in your env.mk file"
