@@ -6,9 +6,10 @@ authors = ["Guto Maia <guto@guto.net>"]
 
 [tool.poetry.dependencies]
 python = "^3.12"
-dw-core = {path = "../dw-core"}
-dw-api = {path = "../dw-api"}
-dw-events = {path = "../dw-events"}
+dw-core = {path = "../dw-core", develop=true}
+dw-api = {path = "../dw-api", develop = true}
+dw-auth = {path = "../dw-auth", develop = true}
+dw-events = {path = "../dw-events", develop=true}
 pydantic = "^2.11.4"
 inject = "^5.2.1"
 fastapi = "^0.115.12"
@@ -31,6 +32,8 @@ black = "^25.1.0"
 isort = "^6.0.1"
 pycodestyle = "^2.13.0"
 flake8 = "^7.2.0"
+dw-featureflag = {path = "../dw-featureflag", develop = true}
+packaging = "^26.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
