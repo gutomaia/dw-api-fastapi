@@ -41,44 +41,66 @@ class FastAPIEndpointGenerator(EndpointGenerator):
     def generate_command_route(
         self, command: Command, func: CommandFunctionType
     ):
-        route_path = f'/{command.__name__.lower()}'
-        hints = get_type_hints(func)
-        is_deferred = False
+        route_path = getattr(
+            command, '__dw_path__', f'/{command.__name__.lower()}'
+        )
 
-        for arg_name, arg_type in hints.items():
-            if issubclass(arg_type, DeferredEmitter):
-                is_deferred = True
-                defer_name = arg_name
-                break
-
-        if is_deferred:
-
-            @self.router.post(route_path, response_model=dict)
-            async def deferred_dynamic_route(
-                payload: dict, background_tasks: BackgroundTasks
-            ):
-                parsed_command = command.model_validate(payload)
-                kwargs = {}
-                kwargs[defer_name] = FastAPIDeferredEmitter(
-                    background_tasks=background_tasks,
-                )
+        @self.router.post(route_path, response_model=dict)
+        async def dynamic_route(
+            payload: dict,
+            request: Request,
+            background_tasks: BackgroundTasks,
+        ):
+            parsed_command = command.model_validate(payload)
+            kwargs = _get_injected_kwargs(
+                func,
+                dict(request.headers),
+                deferred_emitter_factory=(
+                    lambda: FastAPIDeferredEmitter(
+                        background_tasks=background_tasks,
+                    )
+                ),
+            )
+            try:
                 func(parsed_command, **kwargs)
-                return {}
+            except Forbidden as e:
+                raise HTTPException(status_code=403, detail='Forbidden') from e
+            return {}
 
-        else:
+    def generate_query_route(
+        self,
+        query: Query,
+        func: QueryFunctionType,
+        query_request: type[QueryRequest] | None = None,
+    ):
+        path_source = query if query_request is None else query_request
+        route_path = getattr(
+            path_source, '__dw_path__', f'/{path_source.__name__.lower()}'
+        )
 
-            @self.router.post(route_path, response_model=dict)
-            async def dynamic_route(payload: dict):
-                parsed_command = command.model_validate(payload)
-                func(parsed_command)
-                return {}
+        if query_request is None:
 
-    def generate_query_route(self, query: Query, func: QueryFunctionType):
-        route_path = f'/{query.__name__.lower()}'
+            @self.router.get(route_path, response_model=query)
+            async def dynamic_route(request: Request):
+                kwargs = _get_injected_kwargs(func, dict(request.headers))
+                try:
+                    return func(**kwargs)
+                except Forbidden as e:
+                    raise HTTPException(
+                        status_code=403, detail='Forbidden'
+                    ) from e
+
+            return
 
         @self.router.get(route_path, response_model=query)
-        async def dynamic_route():
-            return func()
+        async def dynamic_route(
+            request: Request, payload: query_request = Depends()
+        ):
+            kwargs = _get_injected_kwargs(func, dict(request.headers))
+            try:
+                return func(payload, **kwargs)
+            except Forbidden as e:
+                raise HTTPException(status_code=403, detail='Forbidden') from e
 
     def get_app(self):
         return self.router

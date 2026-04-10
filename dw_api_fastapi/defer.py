@@ -15,4 +15,4 @@ class FastAPIDeferredEmitter(AbstractDeferredEmitter):
 
     def defer_execution(self, event: Event, subscribers):
         for subscriber in subscribers:
-            self.background_tasks.add_task(subscriber, event, subscriber)
+            self.background_tasks.add_task(subscriber, event)

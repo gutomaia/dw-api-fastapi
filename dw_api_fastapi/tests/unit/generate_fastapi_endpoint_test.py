@@ -6,7 +6,7 @@ import inject
 from dw_api.endpoint import auto_generate_endpoint
 from dw_api.ports import EndpointGenerator
 from dw_api.tests.generate_endpoint_spec import GenerateEndpointSpec
-from dw_core.cqrs import Command
+from dw_core.cqrs import Command, Query, QueryRequest
 from dw_events.adapters import BasicSubscriber
 from dw_events.ports import EventSubscriber
 from fastapi import FastAPI
@@ -80,3 +80,53 @@ class GenerateFastAPIEndpointTest(GenerateEndpointSpec, TestCase):
     def assert_result_code(self, code):
         self.assertTrue(hasattr(self, 'response'))
         self.assertEqual(self.response.status_code, code)
+
+    def test_command_can_define_its_own_path(self):
+        class Echo(Command):
+            __dw_path__ = '/custom/echo'
+            message: str
+
+        def echo(cmd: Echo) -> None:
+            assert cmd.message == 'hi'
+
+        self.given_port(echo)
+        self.when_auto_generate_endpoints()
+
+        r = self.client.post('/custom/echo', json={'message': 'hi'})
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(self.port_spies[echo].is_called)
+
+    def test_query_can_define_its_own_path(self):
+        class WhoAmI(Query):
+            __dw_path__ = '/custom/whoami'
+            subject: str
+
+        def whoami() -> WhoAmI:
+            return WhoAmI(subject='user-1')
+
+        self.given_port(whoami)
+        self.when_auto_generate_endpoints()
+
+        r = self.client.get('/custom/whoami')
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json().get('subject'), 'user-1')
+
+    def test_query_request_is_parsed_from_query_params(self):
+        class WhoAmIRequest(QueryRequest):
+            __dw_path__ = '/custom/whoami-with-request'
+            subject: str
+
+        class WhoAmI(Query):
+            subject: str
+
+        def whoami(req: WhoAmIRequest) -> WhoAmI:
+            return WhoAmI(subject=req.subject)
+
+        self.given_port(whoami)
+        self.when_auto_generate_endpoints()
+
+        r = self.client.get(
+            '/custom/whoami-with-request', params={'subject': 'user-2'}
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json().get('subject'), 'user-2')
