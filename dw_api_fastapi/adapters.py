@@ -1,15 +1,37 @@
-from typing import get_type_hints
-
 from dw_api.ports import (
     CommandFunctionType,
     EndpointGenerator,
     QueryFunctionType,
 )
-from dw_core.cqrs import Command, Query
-from dw_events.ports import DeferredEmitter
-from fastapi import APIRouter, BackgroundTasks
+from dw_auth.exceptions import Forbidden
+from dw_core.core import get_argument_resolvers
+from dw_core.cqrs import Command, Query, QueryRequest
+from dw_core.resolver import ResolutionContext, ResolverRegistry
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
 
 from dw_api_fastapi.defer import FastAPIDeferredEmitter
+
+
+def _get_injected_kwargs(func, headers, deferred_emitter_factory=None):
+    registry = ResolverRegistry()
+    for _, resolver in get_argument_resolvers():
+        registry.register(resolver)
+
+    extras: dict = {}
+    if deferred_emitter_factory is not None:
+        extras['deferred_emitter_factory'] = deferred_emitter_factory
+
+    try:
+        return registry.resolve_kwargs(
+            func,
+            ResolutionContext(headers=headers, extras=extras),
+        )
+    except PermissionError as e:
+        raise HTTPException(status_code=401, detail='Unauthorized') from e
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail='Dependency not configured'
+        ) from e
 
 
 class FastAPIEndpointGenerator(EndpointGenerator):
