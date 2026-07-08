@@ -419,7 +419,7 @@ files = []
 develop = true
 
 [package.dependencies]
-dw-core = {path = "../dw-core"}
+dw-core = {path = "../dw-core", develop = true}
 
 [package.source]
 type = "directory"
@@ -472,7 +472,7 @@ files = []
 develop = true
 
 [package.dependencies]
-dw-core = {path = "../dw-core"}
+dw-core = {path = "../dw-core", develop = true}
 inject = "^5.2.1"
 pydantic = "^2.11.4"
 

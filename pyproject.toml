@@ -6,7 +6,7 @@ authors = ["Guto Maia <guto@guto.net>"]
 
 [tool.poetry.dependencies]
 python = "^3.12"
-dw-core = {path = "../dw-core", develop=true}
+dw-core = {path = "../dw-core", develop = true}
 dw-api = {path = "../dw-api", develop = true}
 dw-auth = {path = "../dw-auth", develop = true}
 dw-events = {path = "../dw-events", develop=true}
