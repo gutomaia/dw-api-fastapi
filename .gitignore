@@ -3,3 +3,5 @@ __pycache__/
 extras/makefiles/
 docs/_build/
 docs/*.jar
+# Local, machine-specific make config. Holds GITHUB_TOKEN: never commit.
+env.mk
